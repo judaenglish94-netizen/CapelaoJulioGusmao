@@ -150,14 +150,15 @@
                         </div>
                     </div>
 
+                    <!-- TÍTULO E SUBTÍTULO COM HIERARQUIA INVERTIDA -->
                     <div class="space-y-2 max-w-md mx-auto">
-                        <span class="inline-block text-[11px] uppercase tracking-[0.22em] text-gold-dark font-semibold">
-                            Capelania Ecumênica
-                        </span>
                         <h1 class="font-serif text-3xl sm:text-4xl font-bold text-navy leading-tight">
-                            Acolhimento humano e escuta serena
+                            Capelania Ecumênica
                         </h1>
-                        <p class="text-sm text-charcoal leading-relaxed">
+                        <p class="text-xs uppercase tracking-[0.18em] text-gold-dark font-semibold">
+                            Acolhimento humano e escuta serena
+                        </p>
+                        <p class="text-xs sm:text-sm text-charcoal/80 leading-relaxed pt-1">
                             Atendimento espiritual sem fronteiras denominacionais, aconselhamento e celebrações com respeito à sua história.
                         </p>
                     </div>
@@ -188,10 +189,11 @@
                             </button>
                         </div>
 
-                        <div class="pt-1">
-                            <p id="secretTrigger" class="py-2.5 px-3 text-[11px] text-charcoal/50 cursor-default">
-                                Atendimento sigiloso e humanizado • Capelania Ecumênica
-                            </p>
+                        <!-- ACESSO PROFISSIONAL DISCRETO E ABAIXO DOS BOTÕES DE DOWNLOAD -->
+                        <div class="pt-3 text-center">
+                            <span id="secretTrigger" class="text-[10px] text-charcoal/40 hover:text-charcoal cursor-default select-none tracking-wider">
+                                v1.0 • Profissional
+                            </span>
                         </div>
                     </div>
 
@@ -222,10 +224,8 @@
                     </p>
                 </div>
 
-                <!-- AS 3 CORTINAS PRINCIPAIS -->
                 <div class="space-y-3.5">
-
-                    <!-- CORTINA 1: ATENDIMENTOS REGULARES -->
+                    <!-- CORTINA 1 -->
                     <div class="accordion-item bg-white rounded-xl border border-white shadow-[0_12px_30px_-6px_rgba(17,27,48,0.22)] overflow-hidden">
                         <button type="button" onclick="toggleAccordion(this)" class="w-full px-5 py-4 flex items-center justify-between text-left bg-navy text-white hover:bg-navy-light transition-colors">
                             <div class="flex items-center gap-3">
@@ -243,7 +243,6 @@
                         <div class="accordion-content">
                             <div class="accordion-inner">
                                 <div class="p-5 pt-4 border-t border-navy/10 space-y-5 bg-white">
-                                    
                                     <div>
                                         <label class="block text-[11px] uppercase tracking-wider font-semibold text-navy mb-2">
                                             1. Selecione o atendimento:
@@ -284,7 +283,7 @@
                         </div>
                     </div>
 
-                    <!-- CORTINA 2: CELEBRAÇÃO RELIGIOSA DE CASAMENTO -->
+                    <!-- CORTINA 2 -->
                     <div class="accordion-item bg-white rounded-xl border border-white shadow-[0_12px_30px_-6px_rgba(17,27,48,0.22)] overflow-hidden">
                         <button type="button" onclick="toggleAccordion(this)" class="w-full px-5 py-4 flex items-center justify-between text-left bg-navy text-white hover:bg-navy-light transition-colors">
                             <div class="flex items-center gap-3">
@@ -328,7 +327,7 @@
                         </div>
                     </div>
 
-                    <!-- CORTINA 3: PALESTRAS -->
+                    <!-- CORTINA 3 -->
                     <div class="accordion-item bg-white rounded-xl border border-white shadow-[0_12px_30px_-6px_rgba(17,27,48,0.22)] overflow-hidden">
                         <button type="button" onclick="toggleAccordion(this)" class="w-full px-5 py-4 flex items-center justify-between text-left bg-navy text-white hover:bg-navy-light transition-colors">
                             <div class="flex items-center gap-3">
@@ -376,7 +375,7 @@
             </div>
         </section>
 
-        <!-- PÁGINA 3: SOBRE MIM, FORMAÇÃO E ÁREAS DE ATUAÇÃO -->
+        <!-- PÁGINA 3: SOBRE MIM, FORMAÇÃO E CREDENCIAIS -->
         <section id="page-sobre" class="app-page hidden py-6 sm:py-10">
             <div class="max-w-2xl mx-auto px-4 sm:px-6 space-y-5">
                 
@@ -392,7 +391,6 @@
                 </div>
 
                 <div class="bg-white rounded-2xl border border-white shadow-[0_20px_50px_-10px_rgba(17,27,48,0.28)] p-6 sm:p-8 space-y-6">
-                    <!-- Cabeçalho Biográfico -->
                     <div class="flex items-center gap-4 border-b border-navy/10 pb-5">
                         <img src="julio.jpg" alt="Capelão Júlio Gusmão"
                             class="w-16 h-16 rounded-full object-cover object-top border border-gold shrink-0"
@@ -407,7 +405,7 @@
                         A capelania ecumênica coloca o ser humano no centro do cuidado. Sem vínculos denominacionais restritivos, ofereço escuta ética, amparo espiritual e condução de cerimônias com profundo respeito à história, aos valores e à fé de cada pessoa ou família.
                     </p>
 
-                    <!-- SEÇÃO: FORMAÇÃO E CREDENCIAIS ECLESIÁSTICAS -->
+                    <!-- SEÇÃO DE DOCUMENTOS (EXIBE AS 3 IMAGENS) -->
                     <div class="space-y-3 pt-1">
                         <div class="flex items-center justify-between">
                             <h3 class="text-xs uppercase tracking-wider font-semibold text-navy flex items-center gap-1.5">
@@ -417,7 +415,7 @@
                             <span class="text-[11px] text-charcoal/60">Toque para ampliar</span>
                         </div>
 
-                        <!-- Destaque Superior: Identidade Eclesiástica (carteira.jpg) -->
+                        <!-- 1. carteira.jpg -->
                         <div onclick="openDocLightbox('carteira.jpg', 'Identidade Eclesiástica • Seminário Paulo de Tarso')"
                             class="group cursor-pointer rounded-xl border border-gold/40 bg-linen p-3.5 hover:border-gold transition-all shadow-sm">
                             <div class="flex items-center justify-between mb-2">
@@ -431,14 +429,12 @@
                                 </span>
                             </div>
                             <div class="rounded-lg overflow-hidden border border-navy/10 bg-white">
-                                <img src="carteira.jpg" alt="Identidade Eclesiástica - Capelão Júlio da Silva Gusmão"
-                                    class="w-full h-auto object-contain group-hover:scale-[1.01] transition-transform duration-300">
+                                <img src="carteira.jpg" alt="Identidade Eclesiástica" class="w-full h-auto object-contain group-hover:scale-[1.01] transition-transform duration-300">
                             </div>
                         </div>
 
-                        <!-- Grade de 2 Colunas: Certificado (seminario.jpg) e Termo de Nomeação (termo.jpg) -->
+                        <!-- 2. seminario.jpg e 3. termo.jpg -->
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                            <!-- Certificado do Seminário -->
                             <div onclick="openDocLightbox('seminario.jpg', 'Certificado de Capelania • Seminário Paulo de Tarso')"
                                 class="group cursor-pointer rounded-xl border border-navy/15 bg-linen p-3.5 hover:border-gold transition-all shadow-sm flex flex-col justify-between">
                                 <div class="mb-2.5">
@@ -447,8 +443,7 @@
                                     <p class="text-[11px] text-charcoal/75 mt-0.5">Conclusão do curso de Capelania (40h)</p>
                                 </div>
                                 <div class="relative rounded-lg overflow-hidden border border-navy/10 bg-white">
-                                    <img src="seminario.jpg" alt="Certificado de Capelania - Seminário Paulo de Tarso"
-                                        class="w-full h-44 object-cover object-top group-hover:scale-[1.02] transition-transform duration-300">
+                                    <img src="seminario.jpg" alt="Certificado de Capelania" class="w-full h-44 object-cover object-top group-hover:scale-[1.02] transition-transform duration-300">
                                     <div class="absolute bottom-2 right-2 bg-navy/90 text-white text-[10px] font-semibold px-2.5 py-1 rounded-md flex items-center gap-1 shadow">
                                         <i data-lucide="zoom-in" class="w-3 h-3 text-gold"></i>
                                         <span>Ver documento</span>
@@ -456,7 +451,6 @@
                                 </div>
                             </div>
 
-                            <!-- Termo de Nomeação -->
                             <div onclick="openDocLightbox('termo.jpg', 'Termo de Nomeação Oficial • SEPAT / MIAV')"
                                 class="group cursor-pointer rounded-xl border border-navy/15 bg-linen p-3.5 hover:border-gold transition-all shadow-sm flex flex-col justify-between">
                                 <div class="mb-2.5">
@@ -465,8 +459,7 @@
                                     <p class="text-[11px] text-charcoal/75 mt-0.5">Habilitação para prestação assistencial</p>
                                 </div>
                                 <div class="relative rounded-lg overflow-hidden border border-navy/10 bg-white">
-                                    <img src="termo.jpg" alt="Termo de Nomeação - Capelão Júlio da Silva Gusmão"
-                                        class="w-full h-44 object-cover object-top group-hover:scale-[1.02] transition-transform duration-300">
+                                    <img src="termo.jpg" alt="Termo de Nomeação" class="w-full h-44 object-cover object-top group-hover:scale-[1.02] transition-transform duration-300">
                                     <div class="absolute bottom-2 right-2 bg-navy/90 text-white text-[10px] font-semibold px-2.5 py-1 rounded-md flex items-center gap-1 shadow">
                                         <i data-lucide="zoom-in" class="w-3 h-3 text-gold"></i>
                                         <span>Ver documento</span>
@@ -476,7 +469,7 @@
                         </div>
                     </div>
 
-                    <!-- SEÇÃO: ÁREAS DE ATUAÇÃO -->
+                    <!-- ÁREAS DE ATUAÇÃO -->
                     <div class="space-y-3 pt-2 border-t border-navy/10">
                         <h3 class="text-xs uppercase tracking-wider font-semibold text-navy">Áreas de Atuação</h3>
                         
@@ -547,7 +540,7 @@
         © 2026 Capelão Júlio Gusmão • Capelania Ecumênica
     </footer>
 
-    <!-- MODAL LIGHTBOX PARA AMPLIAR DOCUMENTOS -->
+    <!-- MODAL LIGHTBOX PARA DOCUMENTOS -->
     <div id="docLightbox" onclick="closeDocLightbox()" class="fixed inset-0 z-50 bg-navy-dark/90 backdrop-blur-sm hidden items-center justify-center p-4">
         <div onclick="event.stopPropagation()" class="bg-white rounded-2xl max-w-3xl w-full p-4 sm:p-5 shadow-2xl border border-gold/50 space-y-3">
             <div class="flex items-center justify-between border-b border-navy/10 pb-2.5">
@@ -563,7 +556,7 @@
         </div>
     </div>
 
-    <!-- MODAL DE INSTRUÇÕES PWA -->
+    <!-- MODAL PWA -->
     <div id="pwaModal" class="fixed inset-0 z-50 bg-navy-dark/80 backdrop-blur-sm hidden items-center justify-center p-4">
         <div class="bg-white rounded-2xl max-w-sm w-full p-6 shadow-2xl border border-gold/50 relative">
             <button onclick="closePwaModal()" class="absolute top-4 right-4 p-1.5 rounded-lg bg-navy text-white hover:bg-navy-light">
@@ -640,7 +633,6 @@
             window.scrollTo(0, 0);
         }
 
-        // Lightbox para documentos
         function openDocLightbox(imgSrc, title) {
             document.getElementById('docLightboxImg').src = imgSrc;
             document.getElementById('docLightboxTitle').innerText = title;
