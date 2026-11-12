@@ -67,18 +67,15 @@
             -webkit-tap-highlight-color: transparent;
         }
 
-        /* Controle de Páginas (SPA) */
-        .app-page {
-            display: none;
-            animation: fadeIn 0.25s ease-out;
+        /* Animação suave de entrada da página */
+        .page-enter {
+            animation: pageFadeIn 0.22s ease-out;
         }
-        .app-page.active {
-            display: block;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(6px); }
+        @keyframes pageFadeIn {
+            from { opacity: 0; transform: translateY(4px); }
             to { opacity: 1; transform: translateY(0); }
         }
+
         /* Transição suave das cortinas */
         .accordion-content {
             display: grid;
@@ -94,6 +91,7 @@
         .accordion-item.open > button .chevron-icon {
             transform: rotate(180deg);
         }
+
         /* Destaque dourado quando um horário ou sub-serviço está selecionado */
         .slot-btn.selected, .subservice-pill.selected {
             background-color: #111B30;
@@ -101,6 +99,13 @@
             border-color: #B89758;
             box-shadow: 0 0 0 2px #B89758;
             font-weight: 700;
+        }
+
+        /* Otimização para 3 toques rápidos no celular sem zoom acidental */
+        #secretTrigger {
+            touch-action: manipulation;
+            -webkit-user-select: none;
+            user-select: none;
         }
     </style>
 </head>
@@ -130,17 +135,17 @@
         </div>
     </header>
 
-    <!-- CONTEÚDO PRINCIPAL -->
+    <!-- CONTEÚDO PRINCIPAL (APENAS 1 PÁGINA VISÍVEL POR VEZ) -->
     <main class="flex-1 flex flex-col">
 
         <!-- ================================================================== -->
         <!-- PÁGINA 1: TELA PRINCIPAL                                           -->
         <!-- ================================================================== -->
-        <section id="page-home" class="app-page active flex-1 flex items-center py-6 sm:py-12">
+        <section id="page-home" class="app-page page-enter flex-1 flex items-center py-6 sm:py-12">
             <div class="max-w-3xl mx-auto px-4 sm:px-6 w-full">
                 <div class="bg-white rounded-2xl border border-white shadow-[0_20px_50px_-10px_rgba(17,27,48,0.28)] p-6 sm:p-10 text-center space-y-6">
                     
-                    <!-- Retrato Compacto (Referenciado como julio.jpg) -->
+                    <!-- Retrato Compacto -->
                     <div class="relative w-32 h-32 sm:w-40 sm:h-40 mx-auto">
                         <div class="absolute -inset-1.5 rounded-full border border-gold"></div>
                         <div class="w-full h-full rounded-full overflow-hidden bg-navy shadow-md border-2 border-white">
@@ -166,23 +171,20 @@
                         </p>
                     </div>
 
-                    <!-- TODOS OS BOTÕES AZUL ESCURO COM TEXTO BRANCO -->
+                    <!-- BOTÕES -->
                     <div class="max-w-sm mx-auto space-y-3 pt-1">
-                        <!-- 1. Agendar atendimentos -->
                         <button type="button" onclick="navigateTo('agendar')"
                             class="w-full py-4 px-6 bg-navy text-white font-semibold rounded-xl hover:bg-navy-light active:scale-[0.99] transition-all shadow-md flex items-center justify-center gap-2.5 text-base">
                             <i data-lucide="calendar-check" class="w-5 h-5 text-gold"></i>
                             <span>Agendar atendimentos</span>
                         </button>
 
-                        <!-- 2. Sobre mim e áreas de atuação -->
                         <button type="button" onclick="navigateTo('sobre')"
                             class="w-full py-3.5 px-6 bg-navy text-white font-semibold rounded-xl hover:bg-navy-light active:scale-[0.99] transition-all shadow-md flex items-center justify-center gap-2 text-sm">
                             <i data-lucide="book-open" class="w-4 h-4 text-gold"></i>
                             <span>Sobre mim e áreas de atuação</span>
                         </button>
 
-                        <!-- 3. Aplicativo para Android e iOS -->
                         <div class="grid grid-cols-2 gap-2.5 pt-0.5">
                             <button type="button" onclick="openPwaModal('android')"
                                 class="py-3 px-3 bg-navy text-white text-xs font-semibold rounded-xl hover:bg-navy-light active:scale-[0.99] transition-all shadow-md flex items-center justify-center gap-1.5">
@@ -196,9 +198,9 @@
                             </button>
                         </div>
 
-                        <!-- Gatilho Secreto (3 cliques) -->
-                        <div class="pt-2">
-                            <p id="secretTrigger" class="text-[11px] text-charcoal/50 select-none cursor-default">
+                        <!-- Gatilho Secreto (3 toques rápidos no celular ou PC) -->
+                        <div class="pt-1">
+                            <p id="secretTrigger" class="py-2.5 px-3 text-[11px] text-charcoal/50 cursor-default">
                                 Atendimento sigiloso e humanizado • Capelania Ecumênica
                             </p>
                         </div>
@@ -209,9 +211,9 @@
         </section>
 
         <!-- ================================================================== -->
-        <!-- PÁGINA 2: AGENDAR ATENDIMENTOS                                     -->
+        <!-- PÁGINA 2: AGENDAR ATENDIMENTOS (OCULTA ATÉ SER CLICADA)            -->
         <!-- ================================================================== -->
-        <section id="page-agendar" class="app-page py-6 sm:py-10">
+        <section id="page-agendar" class="app-page hidden py-6 sm:py-10">
             <div class="max-w-2xl mx-auto px-4 sm:px-6 space-y-5">
                 
                 <!-- Barra Superior -->
@@ -390,9 +392,9 @@
         </section>
 
         <!-- ================================================================== -->
-        <!-- PÁGINA 3: SOBRE MIM & ÁREAS DE ATUAÇÃO                             -->
+        <!-- PÁGINA 3: SOBRE MIM & ÁREAS DE ATUAÇÃO (OCULTA ATÉ SER CLICADA)    -->
         <!-- ================================================================== -->
-        <section id="page-sobre" class="app-page py-6 sm:py-10">
+        <section id="page-sobre" class="app-page hidden py-6 sm:py-10">
             <div class="max-w-2xl mx-auto px-4 sm:px-6 space-y-5">
                 
                 <!-- Barra Superior -->
@@ -555,10 +557,25 @@
     <script>
         lucide.createIcons();
 
+        // NAVEGAÇÃO REAL ENTRE PÁGINAS (SEM ROLAGEM)
         function navigateTo(pageId) {
-            document.querySelectorAll('.app-page').forEach(p => p.classList.remove('active'));
-            document.getElementById(`page-${pageId}`).classList.add('active');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            // Oculta todas as páginas
+            document.querySelectorAll('.app-page').forEach(page => {
+                page.classList.add('hidden');
+                page.classList.remove('flex', 'page-enter');
+            });
+
+            // Exibe apenas a página selecionada
+            const target = document.getElementById(`page-${pageId}`);
+            target.classList.remove('hidden');
+            if (pageId === 'home') {
+                target.classList.add('flex');
+            }
+            
+            // Reinicia a animação e coloca a visão imediatamente no topo da tela
+            void target.offsetWidth;
+            target.classList.add('page-enter');
+            window.scrollTo(0, 0);
         }
 
         const daysConfig = [
@@ -718,12 +735,13 @@
             document.getElementById('pwaModal').classList.remove('flex');
         }
 
+        // GATILHO DE 3 TOQUES / CLIQUES OTIMIZADO PARA CELULAR E PC
         let clickCount = 0;
         let clickTimer;
         document.getElementById('secretTrigger').addEventListener('click', () => {
             clickCount++;
             clearTimeout(clickTimer);
-            clickTimer = setTimeout(() => { clickCount = 0; }, 1000);
+            clickTimer = setTimeout(() => { clickCount = 0; }, 1500);
             if (clickCount === 3) {
                 clickCount = 0;
                 document.getElementById('adminModal').classList.remove('hidden');
