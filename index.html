@@ -150,7 +150,7 @@
                         </div>
                     </div>
 
-                    <!-- CORES INVERTIDAS: TÍTULO COM COR DO SUBTÍTULO E VICE-VERSA -->
+                    <!-- TÍTULO E SUBTÍTULO -->
                     <div class="space-y-2 max-w-md mx-auto">
                         <h1 class="font-serif text-3xl sm:text-4xl font-bold text-gold-dark leading-tight">
                             Capelania Ecumênica
@@ -189,9 +189,9 @@
                             </button>
                         </div>
 
-                        <!-- ACESSO PROFISSIONAL DISCRETO E ABAIXO DOS BOTÕES DE DOWNLOAD -->
+                        <!-- ACESSO PROFISSIONAL DISCRETO (CLIQUE SIMPLES) -->
                         <div class="pt-3 text-center">
-                            <span id="secretTrigger" class="text-[10px] text-charcoal/40 hover:text-charcoal cursor-default select-none tracking-wider">
+                            <span id="secretTrigger" class="text-[10px] text-charcoal/40 hover:text-charcoal cursor-pointer select-none tracking-wider underline">
                                 v1.0 • Profissional
                             </span>
                         </div>
@@ -842,20 +842,10 @@
             document.getElementById('pwaModal').classList.remove('flex');
         }
 
-        let clickCount = 0;
-        let clickTimer;
-        let sessionAdminNick = "";
-        let sessionAdminPass = "";
-
+        // ACESSO PROFISSIONAL COM CLIQUE ÚNICO SIMPLES
         document.getElementById('secretTrigger').addEventListener('click', () => {
-            clickCount++;
-            clearTimeout(clickTimer);
-            clickTimer = setTimeout(() => { clickCount = 0; }, 1500);
-            if (clickCount === 3) {
-                clickCount = 0;
-                document.getElementById('adminModal').classList.remove('hidden');
-                document.getElementById('adminModal').classList.add('flex');
-            }
+            document.getElementById('adminModal').classList.remove('hidden');
+            document.getElementById('adminModal').classList.add('flex');
         });
 
         function closeAdmin() {
