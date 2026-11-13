@@ -97,6 +97,15 @@
             font-weight: 700;
         }
 
+        .slot-btn:disabled {
+            background-color: #94A3B8 !important;
+            border-color: #CBD5E1 !important;
+            color: #E2E8F0 !important;
+            cursor: not-allowed;
+            opacity: 0.6;
+            text-decoration: line-through;
+        }
+
         #secretTrigger {
             touch-action: manipulation;
             -webkit-user-select: none;
@@ -655,6 +664,9 @@
             void target.offsetWidth;
             target.classList.add('page-enter');
             window.scrollTo(0, 0);
+            if (pageId === 'agendar') {
+                loadBookedSlots();
+            }
         }
 
         function openDocLightbox(imgSrc, title) {
@@ -697,6 +709,7 @@
                                 <div class="grid grid-cols-5 gap-1.5">
                                     ${day.slots.map(time => `
                                         <button type="button" onclick="selectDaySlot(this, '${day.name}', '${time}')"
+                                            data-day="${day.name}" data-time="${time}"
                                             class="slot-btn py-2 text-xs font-semibold text-white rounded border border-navy bg-navy hover:bg-navy-light transition-all">
                                             ${time}
                                         </button>
@@ -725,6 +738,50 @@
 
         lucide.createIcons();
 
+        // Carrega horários ocupados ao iniciar a página
+        async function loadBookedSlots() {
+            try {
+                const res = await fetch(`${SUPABASE_URL}/rest/v1/appointments?select=*`, {
+                    headers: {
+                        'apikey': SUPABASE_PUBLISHABLE_KEY,
+                        'Authorization': `Bearer ${SUPABASE_PUBLISHABLE_KEY}`
+                    }
+                });
+                const data = await res.json();
+                
+                // Reseta todos os botões de horário para habilitados
+                document.querySelectorAll('.slot-btn').forEach(btn => {
+                    btn.disabled = false;
+                    btn.classList.remove('opacity-50', 'cursor-not-allowed');
+                });
+
+                if (res.ok && data) {
+                    data.forEach(item => {
+                        // O campo time armazena o formato exato: Categoria - Subcategoria: Dia • Horário ou similar
+                        // Vamos varrer os botões e desativar se houver match com o dia e o horário
+                        document.querySelectorAll('.slot-btn').forEach(btn => {
+                            const btnDay = btn.getAttribute('data-day');
+                            const btnTime = btn.getAttribute('data-time');
+                            if (item.date === btnDay && item.time.includes(btnTime)) {
+                                btn.disabled = true;
+                                if (btn.classList.contains('selected')) {
+                                    btn.classList.remove('selected');
+                                    selectedDay = "";
+                                    selectedTimeOrSpecial = "";
+                                    updateRegularSummary();
+                                }
+                            }
+                        });
+                    });
+                }
+            } catch (err) {
+                console.error('Erro ao verificar horários ocupados:', err);
+            }
+        }
+
+        // Executa ao carregar a página
+        loadBookedSlots();
+
         function toggleAccordion(btn) {
             btn.closest('.accordion-item').classList.toggle('open');
         }
@@ -741,6 +798,7 @@
         }
 
         function selectDaySlot(btn, dayName, time) {
+            if (btn.disabled) return;
             document.querySelectorAll('.slot-btn').forEach(b => b.classList.remove('selected'));
             document.querySelectorAll('#weekdayAccordions input[type="text"]').forEach(inp => inp.value = '');
             btn.classList.add('selected');
@@ -821,6 +879,7 @@
             } finally {
                 submitBtn.disabled = false;
                 submitBtn.innerHTML = originalHTML;
+                loadBookedSlots(); // Atualiza os botões disponíveis
             }
         }
 
@@ -970,7 +1029,7 @@
         }
 
         async function cancelBooking(id) {
-            if (!confirm("Deseja realmente excluir este agendamento?")) return;
+            if (!confirm("Deseja realmente excluir este agendamento? O horário ficará disponível novamente.")) return;
 
             try {
                 const res = await fetch(`${SUPABASE_URL}/rest/v1/appointments?id=eq.${id}`, {
@@ -984,6 +1043,7 @@
                 if (!res.ok) throw new Error('Falha ao excluir.');
 
                 verifyAdmin();
+                loadBookedSlots(); // Atualiza a agenda imediatamente liberando o botão
             } catch (err) {
                 alert(err.message);
             }
