@@ -1,0 +1,16 @@
+name: Supabase Keep-Alive
+
+on:
+  schedule:
+    - cron: '0 12 * * 1' # Roda toda segunda-feira às 12:00 UTC
+  workflow_dispatch:
+
+jobs:
+  ping-supabase:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Supabase REST API
+        run: |
+          curl -X GET "https://lvmaxonadzgacxksihfu.supabase.co/rest/v1/appointments?select=id&limit=1" \
+          -H "apikey: sb_publishable_NK6GQuGF5NP1HqAm1ZN4pQ_ktawljLR" \
+          -H "Authorization: Bearer sb_publishable_NK6GQuGF5NP1HqAm1ZN4pQ_ktawljLR"
