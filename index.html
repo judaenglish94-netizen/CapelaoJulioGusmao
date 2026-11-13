@@ -402,7 +402,7 @@
             </div>
         </section>
 
-        <!-- PÁGINA 3: SOBRE MIM -->
+        <!-- PÁGINA 3: SOBRE MIM (DOCUMENTOS CORRIGIDOS) -->
         <section id="page-sobre" class="app-page hidden py-6 sm:py-10">
             <div class="max-w-2xl mx-auto px-4 sm:px-6 space-y-5">
                 
@@ -432,7 +432,7 @@
                         A capelania ecumênica coloca o ser humano no centro do cuidado. Sem vínculos denominacionais restritivos, ofereço escuta ética, amparo espiritual e condução de cerimônias com profundo respeito à história, aos valores e à fé de cada pessoa ou família.
                     </p>
 
-                    <!-- SEÇÃO DE DOCUMENTOS -->
+                    <!-- SEÇÃO DE DOCUMENTOS CORRIGIDA -->
                     <div class="space-y-3 pt-1">
                         <div class="flex items-center justify-between">
                             <h3 class="text-xs uppercase tracking-wider font-semibold text-navy flex items-center gap-1.5">
@@ -460,6 +460,7 @@
                         </div>
 
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                            <!-- CARD 1: CERTIFICAÇÃO (SEMINARIO.JPG) -->
                             <div onclick="openDocLightbox('seminario.jpg', 'Certificado de Capelania • Seminário Paulo de Tarso')"
                                 class="group cursor-pointer rounded-xl border border-navy/15 bg-linen p-3.5 hover:border-gold transition-all shadow-sm flex flex-col justify-between">
                                 <div class="mb-2.5">
@@ -476,6 +477,7 @@
                                 </div>
                             </div>
 
+                            <!-- CARD 2: NOMEAÇÃO OFICIAL (TERMO.JPG) -->
                             <div onclick="openDocLightbox('termo.jpg', 'Termo de Nomeação Oficial • SEPAT / MIAV')"
                                 class="group cursor-pointer rounded-xl border border-navy/15 bg-linen p-3.5 hover:border-gold transition-all shadow-sm flex flex-col justify-between">
                                 <div class="mb-2.5">
@@ -738,7 +740,6 @@
 
         lucide.createIcons();
 
-        // Carrega horários ocupados ao iniciar a página
         async function loadBookedSlots() {
             try {
                 const res = await fetch(`${SUPABASE_URL}/rest/v1/appointments?select=*`, {
@@ -749,7 +750,6 @@
                 });
                 const data = await res.json();
                 
-                // Reseta todos os botões de horário para habilitados
                 document.querySelectorAll('.slot-btn').forEach(btn => {
                     btn.disabled = false;
                     btn.classList.remove('opacity-50', 'cursor-not-allowed');
@@ -757,8 +757,6 @@
 
                 if (res.ok && data) {
                     data.forEach(item => {
-                        // O campo time armazena o formato exato: Categoria - Subcategoria: Dia • Horário ou similar
-                        // Vamos varrer os botões e desativar se houver match com o dia e o horário
                         document.querySelectorAll('.slot-btn').forEach(btn => {
                             const btnDay = btn.getAttribute('data-day');
                             const btnTime = btn.getAttribute('data-time');
@@ -779,7 +777,6 @@
             }
         }
 
-        // Executa ao carregar a página
         loadBookedSlots();
 
         function toggleAccordion(btn) {
@@ -836,8 +833,8 @@
                 : "Abra um dia acima para escolher";
         }
 
-        // SALVANDO NO SUPABASE
-        async function sendBookingToSupabase(payload, submitBtn) {
+        // SALVANDO NO SUPABASE E FORMATANDO MENSAGEM DO WHATSAPP COM EMOJIS
+        async function sendBookingToSupabase(payload, submitBtn, formType) {
             const originalHTML = submitBtn.innerHTML;
             submitBtn.disabled = true;
             submitBtn.innerHTML = `<span>Registrando e abrindo WhatsApp...</span>`;
@@ -863,15 +860,36 @@
                     throw new Error(errData.message || 'Falha ao registrar agendamento no banco de dados.');
                 }
 
-                let msg = `Olá, Capelão Júlio! Gostaria de confirmar o agendamento:\n\n`;
-                msg += `• *Categoria:* ${payload.categoria}\n`;
-                if (payload.subservico) msg += `• *Tipo:* ${payload.subservico}\n`;
-                msg += `• *Nome:* ${payload.nome}\n`;
-                if (payload.dia) msg += `• *Dia:* ${payload.dia}\n`;
-                msg += `• *Horário/Detalhes:* ${payload.detalhe}`;
+                // MENSAGEM HUMANIZADA E ESTILIZADA COM EMOJIS
+                let msg = `🕊️ *SOLICITAÇÃO DE AGENDAMENTO* 🕊️\n\n`;
+                msg += `Olá, Capelão Júlio! Gostaria de solicitar um horário de atendimento através do site:\n\n`;
+                msg += `📌 *Categoria:* ${payload.categoria}\n`;
+                if (payload.subservico) msg += `🤝 *Tipo:* ${payload.subservico}\n`;
+                msg += `👤 *Solicitante:* ${payload.nome}\n`;
+                if (payload.dia) msg += `📅 *Dia:* ${payload.dia}\n`;
+                msg += `⏰ *Horário/Detalhes:* ${payload.detalhe}\n\n`;
+                msg += `_Aguardando confirmação. Deus abençoe! 🙏_`;
 
                 const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
                 window.location.href = whatsappUrl;
+
+                // LIMPA O CAMPO DE NOME APÓS O ENVIO
+                if (formType === 'regular') {
+                    document.getElementById('regName').value = '';
+                    selectedDay = "";
+                    selectedTimeOrSpecial = "";
+                    updateRegularSummary();
+                    document.querySelectorAll('.slot-btn').forEach(b => b.classList.remove('selected'));
+                    document.querySelectorAll('#weekdayAccordions input[type="text"]').forEach(inp => inp.value = '');
+                } else if (formType === 'wedding') {
+                    document.getElementById('wedName').value = '';
+                    document.getElementById('wedDesc').value = '';
+                    document.getElementById('wedCharCount').innerText = '0/300';
+                } else if (formType === 'lecture') {
+                    document.getElementById('lecName').value = '';
+                    document.getElementById('lecDesc').value = '';
+                    document.getElementById('lecCharCount').innerText = '0/300';
+                }
 
             } catch (err) {
                 console.error(err);
@@ -879,7 +897,7 @@
             } finally {
                 submitBtn.disabled = false;
                 submitBtn.innerHTML = originalHTML;
-                loadBookedSlots(); // Atualiza os botões disponíveis
+                loadBookedSlots();
             }
         }
 
@@ -898,10 +916,10 @@
                 nome,
                 dia: selectedDay,
                 detalhe: selectedTimeOrSpecial
-            }, btn);
+            }, btn, 'regular');
         }
 
-        function submitSpecialBooking(e, category, nameInputId, descInputId, formEl) {
+        function submitSpecialBooking(e, category, nameInputId, descInputId, formEl, formType) {
             e.preventDefault();
             const nome = document.getElementById(nameInputId).value.trim();
             const desc = document.getElementById(descInputId).value.trim();
@@ -913,7 +931,7 @@
                 nome,
                 dia: '',
                 detalhe: `${desc} (Sujeito à aprovação)`
-            }, btn);
+            }, btn, formType);
         }
 
         function openPwaModal(platform) {
@@ -1043,7 +1061,7 @@
                 if (!res.ok) throw new Error('Falha ao excluir.');
 
                 verifyAdmin();
-                loadBookedSlots(); // Atualiza a agenda imediatamente liberando o botão
+                loadBookedSlots();
             } catch (err) {
                 alert(err.message);
             }
