@@ -581,7 +581,7 @@
         </div>
     </div>
 
-    <!-- MODAL ADMINISTRATIVO -->
+    <!-- MODAL ADMINISTRATIVO COM LOGIN INTEGRADO À TABELA "admins" -->
     <div id="adminModal" class="fixed inset-0 z-50 bg-navy-dark/80 backdrop-blur-sm hidden items-center justify-center p-4">
         <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-gold/40">
             <div class="flex items-center justify-between border-b border-navy/10 pb-3 mb-5">
@@ -595,7 +595,9 @@
             </div>
 
             <div id="adminLoginStep" class="space-y-3.5">
-                <p class="text-xs text-charcoal">Informe sua senha administrativa para ver os agendamentos:</p>
+                <p class="text-xs text-charcoal">Informe seu usuário e senha cadastrados para acessar o painel:</p>
+                <input type="text" id="adminNick" autocomplete="off" placeholder="Nickname (ex: julio)"
+                    class="w-full px-3.5 py-2.5 rounded-lg border border-navy/20 text-sm text-charcoal focus:outline-none focus:border-gold">
                 <input type="password" id="adminPass" autocomplete="off" placeholder="Senha"
                     class="w-full px-3.5 py-2.5 rounded-lg border border-navy/20 text-sm text-charcoal focus:outline-none focus:border-gold">
                 <button type="button" id="btnAdminLogin" onclick="verifyAdmin()" class="w-full py-3 bg-navy text-white text-sm font-semibold rounded-xl hover:bg-navy-light">
@@ -613,11 +615,11 @@
         </div>
     </div>
 
-    <!-- SCRIPT DE INTEGRAÇÃO COM O SUPABASE E LÓGICA DA Página -->
+    <!-- SCRIPT DE INTEGRAÇÃO COM O SUPABASE -->
     <script>
         const SUPABASE_URL = 'https://lvmaxonadzgacxksihfu.supabase.co';
         const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_NK6GQuGF5NP1HqAm1ZN4pQ_ktawljLR';
-        const WHATSAPP_NUMBER = '5579999999999'; // Substitua pelo seu número real se necessário
+        const WHATSAPP_NUMBER = '5579999999999'; // Substitua pelo seu WhatsApp real se necessário
 
         lucide.createIcons();
 
@@ -755,14 +757,13 @@
                 : "Abra um dia acima para escolher";
         }
 
-        // SALVANDO DIRETAMENTE NO SUPABASE E ABRINDO WHATSAPP
+        // SALVANDO DIRETAMENTE NO SUPABASE (COLUNAS: name, date, time)
         async function sendBookingToSupabase(payload, submitBtn) {
             const originalHTML = submitBtn.innerHTML;
             submitBtn.disabled = true;
             submitBtn.innerHTML = `<span>Registrando e abrindo WhatsApp...</span>`;
 
             try {
-                // Insere no Supabase (tabela appointments)
                 const res = await fetch(`${SUPABASE_URL}/rest/v1/appointments`, {
                     method: 'POST',
                     headers: {
@@ -774,8 +775,7 @@
                     body: JSON.stringify({
                         name: payload.nome,
                         date: payload.dia || 'Especial/Sob consulta',
-                        time: payload.detalhe,
-                        created_at: new Date().toISOString()
+                        time: `${payload.categoria}${payload.subservico ? ' - ' + payload.subservico : ''}: ${payload.detalhe}`
                     })
                 });
 
@@ -865,13 +865,14 @@
             document.getElementById('pwaModal').classList.remove('flex');
         }
 
-        // ACESSO ADMINISTRATIVO
+        // ACESSO ADMINISTRATIVO VALIDADO PELA TABELA "admins"
         document.getElementById('secretTrigger').addEventListener('click', () => {
             document.getElementById('adminModal').classList.remove('hidden');
             document.getElementById('adminModal').classList.add('flex');
         });
 
         function closeAdmin() {
+            document.getElementById('adminNick').value = "";
             document.getElementById('adminPass').value = "";
             document.getElementById('adminList').innerHTML = "";
             document.getElementById('adminLoginStep').classList.remove('hidden');
@@ -881,16 +882,33 @@
         }
 
         async function verifyAdmin() {
+            const nick = document.getElementById('adminNick').value.trim();
             const pass = document.getElementById('adminPass').value;
             const btn = document.getElementById('btnAdminLogin');
 
-            if (!pass) return;
+            if (!nick || !pass) {
+                alert('Preencha o usuário e a senha.');
+                return;
+            }
 
             btn.disabled = true;
             btn.innerText = "Verificando...";
 
             try {
-                // Como exemplo simples, listamos direto do Supabase se a senha conferir (ou com chave mestre)
+                // Valida o usuário e senha direto na tabela "admins" do Supabase
+                const adminRes = await fetch(`${SUPABASE_URL}/rest/v1/admins?nickname=eq.${encodeURIComponent(nick)}&senha=eq.${encodeURIComponent(pass)}`, {
+                    headers: {
+                        'apikey': SUPABASE_PUBLISHABLE_KEY,
+                        'Authorization': `Bearer ${SUPABASE_PUBLISHABLE_KEY}`
+                    }
+                });
+                const adminData = await adminRes.json();
+
+                if (!adminRes.ok || !adminData || adminData.length === 0) {
+                    throw new Error('Usuário ou senha incorretos.');
+                }
+
+                // Se o login estiver correto, busca os agendamentos
                 const res = await fetch(`${SUPABASE_URL}/rest/v1/appointments?select=*`, {
                     headers: {
                         'apikey': SUPABASE_PUBLISHABLE_KEY,
@@ -926,7 +944,8 @@
 
                 if (!res.ok) throw new Error('Falha ao excluir.');
 
-                verifyAdmin(); // Atualiza a lista
+                // Recarrega a lista após excluir
+                verifyAdmin();
             } catch (err) {
                 alert(err.message);
             }
